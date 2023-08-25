@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    ports:
+      - "8090:8090"
+    volumes:
+      - .:/app

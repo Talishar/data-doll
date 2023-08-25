@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
@@ -16,29 +15,36 @@ import (
 	_ "talishar/data-doll/migrations"
 )
 
+var devMode bool
+
 func main() {
+	// pocketbase, the most important bit of the app.
 	app := pocketbase.New()
 
-	// loosely check if it was executed using "go run"
-	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+	log.Println("🚀 Running the server")
 
-	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
-		// enable auto creation of migration files when making collection changes in the Admin UI
-		// (the isGoRun check is to enable it only during development)
-		Automigrate: isGoRun,
-	})
+	// Define a flag for dev mode, eagerly parse the arguments. In dev mode automigrate is enabled.
+	// enable auto creation of migration files when making collection changes in the Admin UI
+	app.RootCmd.PersistentFlags().BoolVar(&devMode, "dev", false, "run in dev mode")
+	app.RootCmd.ParseFlags(os.Args[1:])
+	if devMode {
+		log.Println("🖥️ Running in dev mode")
+		migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
+			Automigrate: true,
+		})
+	}
 
-	// serves static files from the provided public dir (if exists)
+	// add a route to say 'hello world'
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		e.Router.GET("/hello", func(c echo.Context) error {
 			return c.String(http.StatusOK, "Hello world!")
 		}, apis.ActivityLogger(app), apis.RequireAdminAuth())
-
 		return nil
 	})
+
+	log.Println("🤖 Data Doll is online")
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
-
 }
