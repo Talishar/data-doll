@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
@@ -27,7 +28,11 @@ func main() {
 	// enable auto creation of migration files when making collection changes in the Admin UI
 	app.RootCmd.PersistentFlags().BoolVar(&devMode, "dev", false, "run in dev mode")
 	app.RootCmd.ParseFlags(os.Args[1:])
-	if devMode {
+
+	// check if it was executed using "go run"
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+
+	if devMode || isGoRun {
 		log.Println("🖥️ Running in dev mode")
 		migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 			Automigrate: true,
