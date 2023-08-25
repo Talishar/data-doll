@@ -11,6 +11,9 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+
+	// register the migration files from the migrations package
+	_ "talishar/data-doll/migrations"
 )
 
 func main() {
