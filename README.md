@@ -8,7 +8,7 @@ How to run:
 
 - install go 1.21.0 https://go.dev/doc/install
 - `go mod tidy`
-- `go run main.go serve --dev`
+- `go run main.go serve`
 
 ### The lazy docker way:
 
@@ -16,5 +16,7 @@ How to run:
 - `docker compose up`
 
 and there you go, the docker is configured with air which will automatically reload the app if you make any code changes.
+
+If you need to run the server in dev mode (so any changes to tables will also generate migrations) - make sure to have the `--dev` flag when running, it'll also run in dev mode when you use `go run main.go`
 
 It will not reload if there are any migrations, so be sure to reload the container if you make any data changes.
