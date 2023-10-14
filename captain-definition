@@ -1,4 +1,13 @@
 {
   "schemaVersion": 2,
-  "dockerfilePath": "./beta.Dockerfile"
+  "dockerfileLines": [
+    "FROM golang:1.21 ",
+    "RUN mkdir /datadoll ",
+    "ADD ./ /datadoll/ ",
+    "WORKDIR /datadoll ",
+    "RUN go get -d -v golang.org/x/net/html ",
+    "RUN go mod verify ",
+    "RUN go build -o main . ",
+    "CMD [\"/datadoll/main\"]"
+  ]
 }
