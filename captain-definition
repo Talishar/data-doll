@@ -8,6 +8,6 @@
     "RUN go get -d -v golang.org/x/net/html ",
     "RUN go mod verify ",
     "RUN go build -o main . ",
-    "CMD [\"/datadoll/main\"]"
+    "CMD [\"/datadoll/main\", \"serve\", \"--http=0.0.0.0:8080\"]"
   ]
 }
